@@ -6,6 +6,6 @@ public class ChooseBuilding : MonoBehaviour {
     
     void Start()
     {
-        Destroy(this.transform.root.gameObject, Random.Range(12f,15f));
+        Destroy(this.transform.root.gameObject, Random.Range(13f,15f));
     }
 }
