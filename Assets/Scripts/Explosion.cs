@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof (AudioSource))]
+[RequireComponent(typeof(Rigidbody))]
 public class Explosion : MonoBehaviour {
 
     public float ExplosionForce;
