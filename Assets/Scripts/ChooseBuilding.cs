@@ -4,9 +4,13 @@ using UnityEngine;
 
 public class ChooseBuilding : MonoBehaviour {
 
+    public Transform wave;
+
     void Start()
     {
+        wave = GenerationManager.instance.wave;
         ChooseRandomBuild();
+        Destroy(this.transform.root.gameObject, 10);
     }
 
 	void ChooseRandomBuild()

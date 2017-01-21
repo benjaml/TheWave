@@ -5,13 +5,14 @@ using UnityEngine.UI;
 
 public class ScoreManager : MonoBehaviour {
 
-    public float score;
-    public List<float> listHighScore;
-    public Text scoreText;
-    private int nbHighScore = 10;
+    public static ScoreManager instance = null;
 
 	// Use this for initialization
 	void Awake () {
+        if (instance == null)
+            instance = this;
+        if (instance != this)
+            Destroy(gameObject);
         score = 0;
         listHighScore = new List<float>();
         scoreText.text = "Score : " + score;
@@ -32,6 +33,11 @@ public class ScoreManager : MonoBehaviour {
         }
         listHighScore.Add(0);
     }
+
+    public float score;
+    public List<float> listHighScore;
+    public Text scoreText;
+    private int nbHighScore = 10;
 
     public void AddScore(float _points)
     {

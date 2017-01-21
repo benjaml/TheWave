@@ -6,11 +6,15 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class Explosion : MonoBehaviour {
 
+    public GameObject FxExplo;
+    public GameObject currentFx;
     public float ExplosionForce;
     public int maxRebound = 3;
     private int currentRebound;
-    public float percentageOfExplosions = 10;
+    public float percentageOfExplosionsSound = 5;
+    public float percentageOfExplosionsVisual = 60;
     public float lifeSpan = 5;
+    public float maxLifeSpan = 15;
     private float startTimer;
     private bool startDying;
     public float point = 1000;
@@ -19,34 +23,29 @@ public class Explosion : MonoBehaviour {
     private AudioSource speakers;
     private ScoreManager scoring;
 
-    void OnCollisionEnter(Collision col)
+    void OnTriggerEnter(Collider col)
     {
         if (maxRebound != 0 && currentRebound >= maxRebound)
             return;
 
-        if (col.collider.tag != "Ground" && col.collider.tag != "Building")
+        if (col.tag != "Ground" && col.tag != "Building")
         {
-            Vector3 average = Vector3.zero;
 
-            for (int i = 0; i < col.contacts.Length; i++)
-            {
-                average += col.contacts[i].point;
-            }
-
-            average /= col.contacts.Length;
-
-            gameObject.GetComponent<Rigidbody>().AddExplosionForce(ExplosionForce * 100, average, 10.0f);
-
-            if(!startDying)
-            {
-                scoring.AddScore(point);
-            }
+            Destroy(gameObject,lifeSpan);
 
             startTimer = Time.time;
             startDying = true;
-            
-            if (Random.Range(0, 100) < percentageOfExplosions)
+
+            if (Random.Range(0, 100) < percentageOfExplosionsVisual)
             {
+                gameObject.GetComponent<Rigidbody>().AddForce(new Vector3(Random.Range(-ExplosionForce, ExplosionForce) * 100, Random.Range(-ExplosionForce, ExplosionForce) * 100, Random.Range(-ExplosionForce, ExplosionForce) * 100), ForceMode.Impulse);
+                currentFx = Instantiate(FxExplo, transform.position, Quaternion.identity);
+                Destroy(currentFx, lifeSpan);
+            }
+
+            if (Random.Range(0, 100) < percentageOfExplosionsSound)
+            {
+                speakers.enabled = true;
                 speakers.loop = false;
                 speakers.clip = listExplosions[Random.Range(0, listExplosions.Length)];
                 speakers.Play();
@@ -56,18 +55,15 @@ public class Explosion : MonoBehaviour {
         currentRebound++;
     }
 
-    void Awake()
+    void Start()
     {
         currentRebound = 0;
-        startTimer = 0;
+        startTimer = Time.time;
         speakers = gameObject.GetComponent<AudioSource>();
+        speakers.enabled = false;
         startDying = false;
-        scoring = GameObject.Find("Manager").GetComponent<ScoreManager>();
-    }
-
-    void Update()
-    {
-        if (startDying && lifeSpan + startTimer < Time.time)
-            Destroy(gameObject);
+        scoring = ScoreManager.instance;
+        currentFx = null;
+        Destroy(gameObject, maxLifeSpan);
     }
 }
