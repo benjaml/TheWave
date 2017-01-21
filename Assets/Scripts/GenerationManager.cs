@@ -23,7 +23,6 @@ public class GenerationManager : MonoBehaviour {
     }
 
     public List<GameObject> buildingList;
-    public GameObject buildingBlock;
     public Transform wave;
 
     public void StartGenerateTown()
@@ -33,7 +32,8 @@ public class GenerationManager : MonoBehaviour {
         {
             for (int j = 0; j < 5; j++)
             {
-                Instantiate(buildingBlock, new Vector3(i * -90f, 0f, 240f+j*60f), Quaternion.identity);
+                int rand = (int)Random.Range(0, GenerationManager.instance.buildingList.Count);
+                Instantiate(GenerationManager.instance.buildingList[rand], new Vector3(i * -90f, 0f, 240f+j*60f), Quaternion.identity);
             }
             
         }
@@ -41,10 +41,16 @@ public class GenerationManager : MonoBehaviour {
 
     public void GenerateTown(int wavePosZ)
     {
-        
+        StartCoroutine(spawnTown(wavePosZ));
+    }
+
+    IEnumerator spawnTown(int wavePosZ)
+    {
         for(int i = 0; i < 6; i++)
         {
-            Instantiate(buildingBlock, new Vector3(i * -90f, 0f, wavePosZ*60f + 540f), Quaternion.identity);
+            yield return new WaitForEndOfFrame();
+            int rand = (int)Random.Range(0, GenerationManager.instance.buildingList.Count);
+            Instantiate(GenerationManager.instance.buildingList[rand], new Vector3(i * -90f, 0f, wavePosZ*60f + 540f), Quaternion.identity);
         }
     }
 }
