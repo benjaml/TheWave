@@ -1,17 +1,20 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ScoreManager : MonoBehaviour {
 
     public float score;
     public List<float> listHighScore;
+    public Text scoreText;
     private int nbHighScore = 10;
 
 	// Use this for initialization
 	void Awake () {
         score = 0;
         listHighScore = new List<float>(nbHighScore + 1);
+        scoreText.text = "Score : " + score;
         
         for(int i = 0; i < nbHighScore; i++)
         {
@@ -22,6 +25,7 @@ public class ScoreManager : MonoBehaviour {
     public void AddScore(float _points)
     {
         score += _points;
+        scoreText.text = "Score : " + score;
     }
 
     public void EndOfGame()
