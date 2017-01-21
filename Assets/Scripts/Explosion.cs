@@ -30,7 +30,7 @@ public class Explosion : MonoBehaviour {
 
         if (col.tag != "Ground" && col.tag != "Building")
         {
-
+            scoring.AddScore(point);
             Destroy(gameObject,lifeSpan);
 
             startTimer = Time.time;
