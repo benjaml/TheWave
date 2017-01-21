@@ -5,6 +5,7 @@ using UnityEngine;
 public class Wave : MonoBehaviour {
 
     public float speed;
+    private int index = 0;
 
     public Transform grassPlane;
 
@@ -17,9 +18,11 @@ public class Wave : MonoBehaviour {
 	void Update () {
         grassPlane.position = new Vector3(grassPlane.position.x, grassPlane.position.y, grassPlane.position.z + speed * Time.deltaTime);
         transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z + speed * Time.deltaTime);
-        if((int)transform.position.z % 60 == 0)
+
+        if ((int)transform.position.z >= index*60f)
         {
-            GenerationManager.instance.GenerateTown((int)transform.position.z);
+            GenerationManager.instance.GenerateTown(index);
+            index++;
         }
         
 	}

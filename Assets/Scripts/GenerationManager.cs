@@ -24,6 +24,7 @@ public class GenerationManager : MonoBehaviour {
 
     public List<GameObject> buildingList;
     public GameObject buildingBlock;
+    public Transform wave;
 
     public void StartGenerateTown()
     {
@@ -40,12 +41,10 @@ public class GenerationManager : MonoBehaviour {
 
     public void GenerateTown(int wavePosZ)
     {
-        if(wavePosZ % 60 == 0f)
+        
+        for(int i = 0; i < 6; i++)
         {
-            for(int i = 0; i < 6; i++)
-            {
-                Instantiate(buildingBlock, new Vector3(i * -90f, 0f, wavePosZ + 540f), Quaternion.identity);
-            }
+            Instantiate(buildingBlock, new Vector3(i * -90f, 0f, wavePosZ*60f + 540f), Quaternion.identity);
         }
     }
 }
