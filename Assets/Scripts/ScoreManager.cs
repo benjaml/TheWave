@@ -13,14 +13,25 @@ public class ScoreManager : MonoBehaviour {
 	// Use this for initialization
 	void Awake () {
         score = 0;
-        listHighScore = new List<float>(nbHighScore + 1);
+        listHighScore = new List<float>();
         scoreText.text = "Score : " + score;
         
         for(int i = 0; i < nbHighScore; i++)
         {
-            listHighScore[i] = PlayerPrefs.GetFloat("HighScore"+(i+1) , 0);
+            listHighScore.Add(0);
+
+            if (PlayerPrefs.HasKey("HighScore" + (i + 1)))
+            {
+                listHighScore[i] = PlayerPrefs.GetFloat("HighScore" + (i + 1), 0);
+            }
+            else
+            {
+                listHighScore[i] = 0;
+                PlayerPrefs.SetFloat("HighScore" + (i + 1), 0);
+            }
         }
-	}
+        listHighScore.Add(0);
+    }
 
     public void AddScore(float _points)
     {
