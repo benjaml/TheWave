@@ -15,7 +15,7 @@ public class Explosion : MonoBehaviour {
     public float maxLifeSpan = 15;
     private float startTimer;
     private bool startDying;
-    public float point = 1000;
+    private float point = 666;
 
     public AudioClip[] listExplosions;
     private AudioSource speakers;
@@ -27,6 +27,7 @@ public class Explosion : MonoBehaviour {
         {
 
             Destroy(gameObject,Random.Range(lifeSpan, lifeSpan*1.2f));
+            scoring.AddScore(point);
 
             startTimer = Time.time;
             startDying = true;

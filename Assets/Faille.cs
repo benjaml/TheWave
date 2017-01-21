@@ -7,7 +7,6 @@ using DG.Tweening;
 public class Faille : MonoBehaviour {
 
     public ParticleSystem[] bubules;
-    AudioSource failleSound;
     float lastInput = 0;
     public float delayToMute;
     public float charge = 0;
@@ -22,7 +21,6 @@ public class Faille : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-        failleSound = GetComponent<AudioSource>();
         startSequence();
     }
 	
@@ -30,6 +28,12 @@ public class Faille : MonoBehaviour {
 	void Update () {
         if (!started)
             return;
+
+        if (!SoundManager.instance.introSound.isPlaying)
+        {
+            SoundManager.instance.changeScene();
+        }
+
         charge = Mathf.Max(0, charge - (charge*0.1f) * Time.deltaTime);
         if (Input.anyKeyDown)
         {
@@ -40,8 +44,9 @@ public class Faille : MonoBehaviour {
             lastInput = Time.time;
         }
         float ratio = charge / chargeMax;
+        PlayerPrefs.SetFloat("Ratio", ratio);
         Camera.main.transform.DOShakePosition(0.5f, (0.05f * (ratio))).OnComplete(() => Camera.main.transform.DOKill());
-        failleSound.volume = ratio;
+        SoundManager.instance.failleSound.volume = ratio;
         text.transform.DOShakePosition(0.5f, (5f * (ratio))).OnComplete(() => text.transform.DOKill());
         text.color = new Color(1, 1-ratio, 1-ratio);
 	}
@@ -77,7 +82,8 @@ public class Faille : MonoBehaviour {
     void startGame()
     {
         started = true;
-        failleSound.Play();
+        SoundManager.instance.failleSound.Play();
+        SoundManager.instance.introSound.Play();
         Destroy(timer.gameObject);
     }
 }
