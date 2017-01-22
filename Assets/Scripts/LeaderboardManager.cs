@@ -24,21 +24,40 @@ public class LeaderboardManager : MonoBehaviour {
 
     [Header("Highscore Display")]
     public GameObject end;
-    public Text outputData;
-    public Text entryCount;
-    // Use this for initialization
-    void Start () {
-        
+    public int ScoreCount;
+    public Text outputDataUsername;
+    public Text outputDataScores;
+
+    void OnEnable()
+    {
+        //Tell our 'OnLevelFinishedLoading' function to start listening for a scene change as soon as this script is enabled.
+        SceneManager.sceneLoaded += OnLevelFinishedLoading;
     }
-	
-	// Update is called once per frame
-	void Update () {
+
+    void OnDisable()
+    {
+        //Tell our 'OnLevelFinishedLoading' function to stop listening for a scene change as soon as this script is disabled. Remember to always have an unsubscription for every delegate you subscribe to!
+        SceneManager.sceneLoaded -= OnLevelFinishedLoading;
+    }
+
+    void OnLevelFinishedLoading(Scene scene, LoadSceneMode mode)
+    {
+        if(scene.name == "EndScreen")
+        {
+            end.SetActive(true);
+            GetLeaderboard();
+        }
+    }
+
+    // Update is called once per frame
+    void Update () {
+        /*// TODO: remove test input
         if (Input.GetKeyDown(KeyCode.A))
         {
-            SubmitScore(1234);
+            SubmitScore(Random.Range(0,9999));
         }
         if (Input.GetKeyDown(KeyCode.P))
-            GetLeaderboard();
+            GetLeaderboard();*/
     }
 
     public void SubmitScore(long score)
@@ -61,19 +80,21 @@ public class LeaderboardManager : MonoBehaviour {
         Debug.Log("Fetching Leaderboard Data ...");
         new GameSparks.Api.Requests.LeaderboardDataRequest()
             .SetLeaderboardShortCode("SCORE_LEADERBOARD")
-            .SetEntryCount(int.Parse(entryCount.text)) // we need to parse this text input, since the entry count only take long
+            .SetEntryCount(ScoreCount) // we need to parse this text input, since the entry count only take long
             .Send((response) =>
             {
                 if(!response.HasErrors)
                 {
                     Debug.Log("Found Leaderboard Data ...");
-                    outputData.text = System.String.Empty; // first clear all data from the output
-                    foreach(GameSparks.Api.Responses.LeaderboardDataResponse._LeaderboardData entry in response.Data) // iterate throug the leaderboard data
+                    outputDataScores.text = System.String.Empty; // first clear all data from the output
+                    outputDataUsername.text = System.String.Empty; // first clear all data from the output
+                    foreach (GameSparks.Api.Responses.LeaderboardDataResponse._LeaderboardData entry in response.Data) // iterate throug the leaderboard data
                     {
                         int rank = (int)entry.Rank; // we can get the rank directly
                         string playerName = entry.UserName;
                         string score = entry.JSONData["SCORE"].ToString(); // we need to get the key, in order to get the score
-                        outputData.text += rank + "\t Name: " + playerName + "\t Score" + score + "\n"; // add the score to the output text
+                        outputDataUsername.text += ""+playerName + "\n"; // add the username to the output username text
+                        outputDataScores.text += "" + score + "\n"; // add the score to the output score text
                     }
                 }
             });
@@ -95,7 +116,6 @@ public class LeaderboardManager : MonoBehaviour {
                 }
                 else
                 {
-                    throw new System.Exception();
                     Debug.Log("Error Registering Player... \n " + response.Errors.JSON.ToString());
                 }
 
@@ -105,22 +125,7 @@ public class LeaderboardManager : MonoBehaviour {
 
     public void connect()
     {
-        try
-        {
-            RegisterPlayerBttn();
-        }
-        catch (System.Exception registerException)
-        {
-            // maybe the user is already register ?
-            try
-            {
-                connectUser();
-            }
-            catch (System.Exception connectionException)
-            {
-                Debug.Log("Connection failed, maybe try in offline mode");
-            }
-        }
+        RegisterPlayerBttn();
         connectUser();
         start.SetActive(false);
         SceneManager.LoadScene(1);
@@ -136,7 +141,6 @@ public class LeaderboardManager : MonoBehaviour {
             }
             else
             {
-                throw new System.Exception();
                 Debug.Log("Didnt Work");
             }
         });
