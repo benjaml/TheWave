@@ -18,7 +18,7 @@ public class LeaderboardManager : MonoBehaviour
             Destroy(gameObject);
     }
     bool offline = false;
-    List<float> HighscoreList = new List<float>(5);
+    public List<float> HighscoreList = new List<float>(5);
 
     [Header("Connection")]
     public GameObject start;
@@ -30,6 +30,17 @@ public class LeaderboardManager : MonoBehaviour
     public int ScoreCount;
     public Text outputDataUsername;
     public Text outputDataScores;
+
+
+    void Start()
+    {
+        HighscoreList = new List<float>(5);
+        for(int i = 0; i < 5; i++)
+        {
+            HighscoreList.Add(0f);
+        }
+
+    }
 
     void OnEnable()
     {
@@ -72,9 +83,12 @@ public class LeaderboardManager : MonoBehaviour
             int listHighscoreIndex = 0;
             for (int i = 0; i < 5; i++)
             {
-                float nextHighScore = PlayerPrefs.GetFloat("Highscore" + listHighscoreIndex);
+                float nextHighScore = PlayerPrefs.GetFloat("Highscore" + listHighscoreIndex, 0);
                 if (score > nextHighScore)
+                {
                     HighscoreList[i] = score;
+                    score = -1;
+                }
                 else
                 {
                     HighscoreList[i] = nextHighScore;
@@ -107,11 +121,11 @@ public class LeaderboardManager : MonoBehaviour
     {
         if (offline)
         {
-            outputDataUsername.text += "ME" + "\n"; // add the username to the output username text
-            outputDataScores.text += "" + PlayerPrefs.GetFloat("Highscore") + "\n"; // add the score to the output score text
             for (int i = 0; i < 5; i++)
             {
-
+                if (HighscoreList[i] <= 0)
+                    return;
+                outputDataUsername.text += "ME" + "\n"; // add the username to the output username text
                 outputDataScores.text += "" + HighscoreList[i] + "\n"; // add the score to the output score text
                 PlayerPrefs.SetFloat("Highscore" + i, HighscoreList[i]);
             }
