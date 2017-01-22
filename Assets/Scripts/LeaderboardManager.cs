@@ -4,7 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-public class LeaderboardManager : MonoBehaviour {
+public class LeaderboardManager : MonoBehaviour
+{
 
     public static LeaderboardManager instance = null;
 
@@ -16,6 +17,8 @@ public class LeaderboardManager : MonoBehaviour {
         if (instance != this)
             Destroy(gameObject);
     }
+    bool offline = false;
+    List<float> HighscoreList = new List<float>(5);
 
     [Header("Connection")]
     public GameObject start;
@@ -42,7 +45,7 @@ public class LeaderboardManager : MonoBehaviour {
 
     void OnLevelFinishedLoading(Scene scene, LoadSceneMode mode)
     {
-        if(scene.name == "EndScreen")
+        if (scene.name == "EndScreen")
         {
             end.SetActive(true);
             GetLeaderboard();
@@ -50,7 +53,8 @@ public class LeaderboardManager : MonoBehaviour {
     }
 
     // Update is called once per frame
-    void Update () {
+    void Update()
+    {
         /*// TODO: remove test input
         if (Input.GetKeyDown(KeyCode.A))
         {
@@ -62,6 +66,23 @@ public class LeaderboardManager : MonoBehaviour {
 
     public void SubmitScore(long score)
     {
+        if (offline)
+        {
+            // updateList
+            int listHighscoreIndex = 0;
+            for (int i = 0; i < 5; i++)
+            {
+                float nextHighScore = PlayerPrefs.GetFloat("Highscore" + listHighscoreIndex);
+                if (score > nextHighScore)
+                    HighscoreList[i] = score;
+                else
+                {
+                    HighscoreList[i] = nextHighScore;
+                    listHighscoreIndex++;
+                }
+            }
+        }
+
         new GameSparks.Api.Requests.LogEventRequest().SetEventKey("SUBMIT_SCORE").SetEventAttribute("SCORE", score.ToString()).Send((response) =>
         {
             if (!response.HasErrors)
@@ -75,15 +96,34 @@ public class LeaderboardManager : MonoBehaviour {
         });
     }
 
+    public void PlayOffline()
+    {
+        offline = true;
+        start.SetActive(false);
+        SceneManager.LoadScene(1);
+
+    }
     void GetLeaderboard()
     {
+        if (offline)
+        {
+            outputDataUsername.text += "ME" + "\n"; // add the username to the output username text
+            outputDataScores.text += "" + PlayerPrefs.GetFloat("Highscore") + "\n"; // add the score to the output score text
+            for (int i = 0; i < 5; i++)
+            {
+
+                outputDataScores.text += "" + HighscoreList[i] + "\n"; // add the score to the output score text
+                PlayerPrefs.SetFloat("Highscore" + i, HighscoreList[i]);
+            }
+        }
+
         Debug.Log("Fetching Leaderboard Data ...");
         new GameSparks.Api.Requests.LeaderboardDataRequest()
             .SetLeaderboardShortCode("SCORE_LEADERBOARD")
             .SetEntryCount(ScoreCount) // we need to parse this text input, since the entry count only take long
             .Send((response) =>
             {
-                if(!response.HasErrors)
+                if (!response.HasErrors)
                 {
                     Debug.Log("Found Leaderboard Data ...");
                     outputDataScores.text = System.String.Empty; // first clear all data from the output
@@ -93,7 +133,7 @@ public class LeaderboardManager : MonoBehaviour {
                         int rank = (int)entry.Rank; // we can get the rank directly
                         string playerName = entry.UserName;
                         string score = entry.JSONData["SCORE"].ToString(); // we need to get the key, in order to get the score
-                        outputDataUsername.text += ""+playerName + "\n"; // add the username to the output username text
+                        outputDataUsername.text += "" + playerName + "\n"; // add the username to the output username text
                         outputDataScores.text += "" + score + "\n"; // add the score to the output score text
                     }
                 }
