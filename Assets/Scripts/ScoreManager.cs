@@ -42,15 +42,6 @@ public class ScoreManager : MonoBehaviour {
 
     private void Start()
     {
-        Social.localUser.Authenticate(ProcessAuthentication);
-        leaderBoard = Social.Active.CreateLeaderboard();
-        leaderBoard.id = LeaderBoardId;
-        leaderBoard.LoadScores(result =>
-        {
-            Debug.Log("Received " + leaderBoard.scores.Length + " scores");
-            foreach (IScore score in leaderBoard.scores)
-                Debug.Log(score);
-        });
     }
 
     // This function gets called when Authenticate completes
