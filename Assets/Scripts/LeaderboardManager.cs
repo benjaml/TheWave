@@ -115,8 +115,8 @@ public class LeaderboardManager : MonoBehaviour
     {
         offline = true;
         start.SetActive(false);
-        SceneManager.LoadScene(1);
-
+        SoundManager.instance.changeScene("FailleScene");
+        Fade.instance.FadeOut("FailleScene");
     }
     void GetLeaderboard()
     {
@@ -187,6 +187,7 @@ public class LeaderboardManager : MonoBehaviour
         connectUser();
         start.SetActive(false);
         //SceneManager.LoadScene(1);
+        SoundManager.instance.changeScene("FailleScene");
         Fade.instance.FadeOut("FailleScene");
     }
 
