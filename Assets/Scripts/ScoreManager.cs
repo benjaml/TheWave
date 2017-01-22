@@ -33,7 +33,7 @@ public class ScoreManager : MonoBehaviour {
             }
         }
 	}
-    ILeaderboard leaderBoard = Social.CreateLeaderboard();
+    ILeaderboard leaderBoard;
     public string LeaderBoardId = "TheWeaveLeaderboard";
     public float score;
     public List<float> listHighScore;
@@ -42,6 +42,8 @@ public class ScoreManager : MonoBehaviour {
 
     private void Start()
     {
+        Social.localUser.Authenticate(ProcessAuthentication);
+        leaderBoard = Social.Active.CreateLeaderboard();
         leaderBoard.id = LeaderBoardId;
         leaderBoard.LoadScores(result =>
         {
@@ -49,6 +51,16 @@ public class ScoreManager : MonoBehaviour {
             foreach (IScore score in leaderBoard.scores)
                 Debug.Log(score);
         });
+    }
+
+    // This function gets called when Authenticate completes
+    // Note that if the operation is successful, Social.localUser will contain data from the server.
+    private void ProcessAuthentication(bool success )
+    {
+        if (success)
+            Debug.Log("Authenticated");
+        else
+            Debug.Log("Failed to authenticate");
     }
 
     public void AddScore(float _points)
@@ -69,16 +81,38 @@ public class ScoreManager : MonoBehaviour {
         SaveScores();
     }
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.A))
+            SaveScores();
+        if (Input.GetKeyDown(KeyCode.Z))
+            DisplayLeaderboard();
+    }
+
+    private void DisplayLeaderboard()
+    {
+        leaderBoard.LoadScores(result =>
+        {
+            Debug.Log("Received " + leaderBoard.scores.Length + " scores");
+            foreach (IScore score in leaderBoard.scores)
+                Debug.Log(score);
+        });
+    }
+
     private void SaveScores()
     {
-        for(int i = 0; i < nbHighScore; i++)
+        Social.ReportScore(Random.Range(0,10), LeaderBoardId, success =>
+        {
+            Debug.Log(success ? "Reported score successfully" : "Failed to report score");
+        });
+        /*for (int i = 0; i < nbHighScore; i++)
         {
             PlayerPrefs.SetFloat("HighScore" + i, listHighScore[i]);
 
         }
-        /*Social.LoadScores(LeaderBoardId, scores =>
+        Social.LoadScores(LeaderBoardId, scores =>
         {
-            addScoreInLeaderBoard(new CustomScore());
+            addScoreInLeaderBoard();
         });*/
     }
 
