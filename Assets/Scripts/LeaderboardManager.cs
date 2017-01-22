@@ -183,6 +183,8 @@ public class LeaderboardManager : MonoBehaviour
 
     public void connect()
     {
+        if (userNameInput.text.Equals(""))
+            return;
         RegisterPlayerBttn();
         connectUser();
         start.SetActive(false);
