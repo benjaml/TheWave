@@ -21,6 +21,7 @@ public class EndUIManager : MonoBehaviour {
 
     public void Replay()
     {
-        SceneManager.LoadScene(1);
+        SoundManager.instance.changeScene("FailleScene");
+        Fade.instance.FadeOut("FailleScene");
     }
 }

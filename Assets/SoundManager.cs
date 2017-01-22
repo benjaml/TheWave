@@ -26,14 +26,15 @@ public class SoundManager : MonoBehaviour {
         gameLoopSound.clip = menu;
         gameLoopSound.Play();
 
-        introSound.clip = menuAmbient;
-        introSound.Play();
+        ambientSound.clip = menuAmbient;
+        ambientSound.Play();
     }
 
     public AudioSource failleSound;
     public AudioSource introSound;
     public AudioSource gameLoopSound;
     public AudioSource explosionSound;
+    public AudioSource ambientSound;
 
     public AudioClip game;
     public AudioClip menu;
@@ -46,21 +47,20 @@ public class SoundManager : MonoBehaviour {
             Fade.instance.FadeOut("Main");
             gameLoopSound.clip = game;
             gameLoopSound.Play();
-        }else if(sceneName == "EndMenu")
+        }else if(sceneName == "EndScreen")
         {
-            Fade.instance.FadeOut("EndMenu");
             gameLoopSound.clip = menu;
             gameLoopSound.Play();
 
-            introSound.clip = menuAmbient;
-            introSound.Play();
+            ambientSound.clip = menuAmbient;
+            ambientSound.Play();
         }
         else if(sceneName == "FailleScene")
         {
             gameLoopSound.Stop();
-            
-            introSound.Stop();
+
+            ambientSound.Stop();
         }
-        
+
     }
 }
