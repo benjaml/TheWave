@@ -26,9 +26,22 @@ public class SoundManager : MonoBehaviour {
     public AudioSource gameLoopSound;
     public AudioSource explosionSound;
 
-    public void changeScene()
+    public AudioClip game;
+    public AudioClip menu;
+
+    public void changeScene(string sceneName)
     {
-        Fade.instance.FadeOut("Main");
-        gameLoopSound.Play();
+        if(sceneName == "Main")
+        {
+            Fade.instance.FadeOut("Main");
+            gameLoopSound.clip = game;
+            gameLoopSound.Play();
+        }else if(sceneName == "EndMenu")
+        {
+            Fade.instance.FadeOut("EndMenu");
+            gameLoopSound.clip = menu;
+            gameLoopSound.Play();
+        }
+        
     }
 }

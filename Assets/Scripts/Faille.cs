@@ -7,6 +7,7 @@ using DG.Tweening;
 public class Faille : MonoBehaviour {
 
     public ParticleSystem[] bubules;
+    public ParticleSystem[] boomFx;
     float lastInput = 0;
     public float delayToMute;
     public float charge = 0;
@@ -16,6 +17,7 @@ public class Faille : MonoBehaviour {
     public GameObject rightFaille;
     public Text text;
     public Text timer;
+    public Animator anim;
 
     bool started = false;
     bool charging = false;
@@ -34,7 +36,10 @@ public class Faille : MonoBehaviour {
         if (!SoundManager.instance.introSound.isPlaying && !charging)
         {
             charging = true;
-            SoundManager.instance.changeScene();
+            anim.SetTrigger("Boom");
+            for (int i = 0; i < boomFx.Length; i++)
+                boomFx[Random.Range(0, boomFx.Length)].Play();
+            SoundManager.instance.changeScene("Main");
         }
 
         charge = Mathf.Max(0, charge - (charge*0.1f) * Time.deltaTime);
