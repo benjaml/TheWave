@@ -95,6 +95,7 @@ public class LeaderboardManager : MonoBehaviour
                     listHighscoreIndex++;
                 }
             }
+            return;
         }
 
         new GameSparks.Api.Requests.LogEventRequest().SetEventKey("SUBMIT_SCORE").SetEventAttribute("SCORE", score.ToString()).Send((response) =>
@@ -121,6 +122,8 @@ public class LeaderboardManager : MonoBehaviour
     {
         if (offline)
         {
+            outputDataScores.text = System.String.Empty; // first clear all data from the output
+            outputDataUsername.text = System.String.Empty; // first clear all data from the output
             for (int i = 0; i < 5; i++)
             {
                 if (HighscoreList[i] <= 0)
@@ -129,6 +132,7 @@ public class LeaderboardManager : MonoBehaviour
                 outputDataScores.text += "" + HighscoreList[i] + "\n"; // add the score to the output score text
                 PlayerPrefs.SetFloat("Highscore" + i, HighscoreList[i]);
             }
+            return;
         }
 
         Debug.Log("Fetching Leaderboard Data ...");
@@ -186,6 +190,7 @@ public class LeaderboardManager : MonoBehaviour
         SoundManager.instance.changeScene("FailleScene");
         Fade.instance.FadeOut("FailleScene");
     }
+
     private void connectUser()
     {
         new GameSparks.Api.Requests.AuthenticationRequest().SetUserName(userNameInput.text).SetPassword(defaultPassword).Send((AR) =>
