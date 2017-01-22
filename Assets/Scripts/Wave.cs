@@ -63,6 +63,7 @@ public class Wave : MonoBehaviour {
     {
         endGame = true;
         //TODO changer la targetScene
-        Fade.instance.FadeOut("FailleScene");
+        ScoreManager.instance.EndOfGame();
+        Fade.instance.FadeOut("EndScreen");
     }
 }

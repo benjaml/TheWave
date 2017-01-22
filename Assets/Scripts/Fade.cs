@@ -21,7 +21,8 @@ public class Fade : MonoBehaviour {
         DontDestroyOnLoad(this);
     }
 
-    public CanvasGroup canvas;
+    public GameObject canvas;
+    public CanvasGroup canvasGroup;
     public float fadeDuration;
 
     void OnEnable()
@@ -43,19 +44,21 @@ public class Fade : MonoBehaviour {
 
     public void FadeIn()
     {
-        canvas.alpha = 1f;
-        canvas.DOFade(0.0f, fadeDuration);
+        canvas.SetActive(true);
+        canvasGroup.alpha = 1f;
+        canvasGroup.DOFade(0.0f, fadeDuration).OnComplete(() => canvas.SetActive(false));
     }
 
     public void FadeOut(string sceneName = null)
     {
-        canvas.alpha = 0.0f;
+        canvas.SetActive(true);
+        canvasGroup.alpha = 0.0f;
         if (sceneName != null)
         {
-            canvas.DOFade(1.0f, fadeDuration).OnComplete(() => SceneManager.LoadScene(sceneName));
+            canvasGroup.DOFade(1.0f, fadeDuration).OnComplete(() => SceneManager.LoadScene(sceneName));
         }else
         {
-            canvas.DOFade(1.0f, fadeDuration);
+            canvasGroup.DOFade(1.0f, fadeDuration);
         }
         
     }

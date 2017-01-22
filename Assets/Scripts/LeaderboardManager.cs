@@ -128,7 +128,8 @@ public class LeaderboardManager : MonoBehaviour {
         RegisterPlayerBttn();
         connectUser();
         start.SetActive(false);
-        SceneManager.LoadScene(1);
+        //SceneManager.LoadScene(1);
+        Fade.instance.FadeOut("FailleScene");
     }
     private void connectUser()
     {
