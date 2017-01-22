@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SocialPlatforms;
 using UnityEngine.UI;
+using DG.Tweening;
 
 public class ScoreManager : MonoBehaviour {
 
@@ -54,6 +55,8 @@ public class ScoreManager : MonoBehaviour {
     public void AddScore(float _points)
     {
         score += _points;
+        scoreText.transform.DOShakeScale(0.5f, 0.01f).OnComplete(() => scoreText.transform.DOKill());
+        //scoreText.transform.DOShakeRotation(0.5f, 3f).OnComplete(() => scoreText.transform.DOKill());
         scoreText.text = "Score : " + score;
     }
 

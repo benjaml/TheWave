@@ -9,7 +9,7 @@ public class Explosion : MonoBehaviour {
     public GameObject FxExplo;
     public GameObject currentFx;
     private float ExplosionForce = 1;
-    private float percentageOfExplosionsSound = 1;
+    private float percentageOfExplosionsSound = 5;
     private float percentageOfExplosionsVisual = 3;
     public float lifeSpan = 5;
     public float maxLifeSpan = 15;
@@ -42,7 +42,7 @@ public class Explosion : MonoBehaviour {
                 Destroy(currentFx, Random.Range(1f,1.5f));
             }
 
-            if (Random.Range(0, 100) < percentageOfExplosionsSound)
+            if (!speakers.isPlaying && Random.Range(0, 100) < percentageOfExplosionsSound)
             {
                 speakers.enabled = true;
                 speakers.loop = false;
@@ -55,7 +55,7 @@ public class Explosion : MonoBehaviour {
     void Start()
     {
         startTimer = Time.time;
-        speakers = gameObject.GetComponent<AudioSource>();
+        speakers = SoundManager.instance.explosionSound;
         speakers.enabled = false;
         startDying = false;
         scoring = ScoreManager.instance;

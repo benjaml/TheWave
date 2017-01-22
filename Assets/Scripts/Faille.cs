@@ -18,9 +18,11 @@ public class Faille : MonoBehaviour {
     public Text timer;
 
     bool started = false;
+    bool charging = false;
 
     // Use this for initialization
     void Start () {
+        charging = false;
         startSequence();
     }
 	
@@ -29,8 +31,9 @@ public class Faille : MonoBehaviour {
         if (!started)
             return;
 
-        if (!SoundManager.instance.introSound.isPlaying)
+        if (!SoundManager.instance.introSound.isPlaying && !charging)
         {
+            charging = true;
             SoundManager.instance.changeScene();
         }
 

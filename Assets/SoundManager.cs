@@ -24,10 +24,11 @@ public class SoundManager : MonoBehaviour {
     public AudioSource failleSound;
     public AudioSource introSound;
     public AudioSource gameLoopSound;
+    public AudioSource explosionSound;
 
     public void changeScene()
     {
-        SceneManager.LoadScene("Main");
+        Fade.instance.FadeOut("Main");
         gameLoopSound.Play();
     }
 }
