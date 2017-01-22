@@ -15,28 +15,11 @@ public class ScoreManager : MonoBehaviour {
         if (instance != this)
             Destroy(gameObject);
         score = 0;
-        listHighScore = new List<float>();
         scoreText.text = "Score : " + score;
-        
-        for(int i = 0; i < nbHighScore; i++)
-        {
-            listHighScore.Add(0);
-
-            if (PlayerPrefs.HasKey("HighScore" + (i + 1)))
-            {
-                listHighScore[i] = PlayerPrefs.GetFloat("HighScore" + (i + 1), 0);
-            }
-            else
-            {
-                listHighScore[i] = 0;
-                PlayerPrefs.SetFloat("HighScore" + (i + 1), 0);
-            }
-        }
 	}
     ILeaderboard leaderBoard;
     public string LeaderBoardId = "TheWeaveLeaderboard";
     public float score;
-    public List<float> listHighScore;
     public Text scoreText;
     private int nbHighScore = 10;
 
@@ -62,13 +45,6 @@ public class ScoreManager : MonoBehaviour {
 
     public void EndOfGame()
     {
-        for(int i = nbHighScore - 1 ; i > 0; i--)
-        {
-            if(listHighScore[i] > score)
-            {
-                listHighScore.Insert(i + 1, score);
-            }
-        }
         SaveScores();
     }
 
